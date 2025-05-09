@@ -36,6 +36,7 @@ const Form = () => {
 
   const handleSelect = (e:any) => {
     setTipo(e.target.value);
+    setShowPrice(false);
     if (e.target.value === "postCard") {
       setPrice("5.00")
     }
@@ -49,7 +50,6 @@ const Form = () => {
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    let priceTemp = 0;
 
     setFormData((prev) => ({
       ...prev,
@@ -57,31 +57,39 @@ const Form = () => {
     }));
 
     if (name === "doubleSide") {
-      const newPrice = parseFloat(price) * 2
-      setPrice(`${newPrice}`)
+      if (checked) {
+        const newPrice = parseFloat(price) * 2
+        setPrice(`${newPrice}`)
+      } else {
+        const newPrice = parseFloat(price) / 2
+        setPrice(`${newPrice}`)
+      }
     }
 
 
   };
 
-  // const handleSubmit = async (e: any) => {
-  //   e.preventDefault();
-  //   const parsedData = {
-  //     ...formData,
-  //     type: type
-  //   }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(formData)
+    const parsedData = {
+      ...formData,
+      getEmail: formData.getEmail ? "Yes" : "No",
+      doubleSide: formData.doubleSide ? "Yes" : "No",
+      type: type
+    }
 
-  //   const response = await fetch("/email", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ ...parsedData }),
-  //   });
-  // };
+    const response = await fetch("/email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...parsedData }),
+    });
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center py-16">
     <form
-      // onSubmit={handleSubmit}
+      onSubmit={handleSubmit}
       className="bg-[#0f172a] text-white p-6 rounded-xl max-w-xl mx-auto shadow-lg"
     >
       <Typography variant="h5" className="mb-4 text-slate-200">
@@ -220,14 +228,14 @@ const Form = () => {
         >
           Calculate Price
         </Button>
-        {/* <Button type="submit" variant="contained" size="large" className="mt-4 bg-blue-700 px-8">
-          Send
-        </Button> */}
         {showPrice && (
           <Box>
             <Typography>${price}</Typography>
           </Box>
         )}
+        <Button type="submit" variant="contained" size="large" className="mt-4 bg-blue-700 px-8">
+          Send
+        </Button>
       </div>
     </form>
     </main>

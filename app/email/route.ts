@@ -10,13 +10,10 @@ export async function POST(request: Request) {
       'origin': 'http://localhost', // Puedes poner tu dominio aquí
     },
     body: JSON.stringify({
-      service_id: 'service_9fofagk',
+      service_id: 'service_sn2dsrj',
       template_id: 'template_fvbtsid',
       user_id: 'klrp7uxlGP3VxhjtS',
-      template_params: {
-        name: 'Juan',
-        lastname: 'Pérez'
-      }
+      template_params: body
     }),
   });
 
