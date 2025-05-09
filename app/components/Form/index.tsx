@@ -15,6 +15,7 @@ import {
   FormControl,
   Typography,
   Box,
+  SelectChangeEvent,
 } from "@mui/material";
 import { formOptions } from "@/app/data";
 
@@ -34,7 +35,7 @@ const Form = () => {
     getEmail: false,
   });
 
-  const handleSelect = (e:any) => {
+  const handleSelect = (e: SelectChangeEvent) => {
     setTipo(e.target.value);
     setShowPrice(false);
     if (e.target.value === "postCard") {
@@ -48,8 +49,10 @@ const Form = () => {
     }
   }
 
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    const { name, value } = e.target;
+    const type = (e as React.ChangeEvent<HTMLInputElement>).target.type;
+    const checked = (e as React.ChangeEvent<HTMLInputElement>).target.checked
 
     setFormData((prev) => ({
       ...prev,
@@ -57,7 +60,7 @@ const Form = () => {
     }));
 
     if (name === "doubleSide") {
-      if (checked) {
+      if (type === "checkbox" && checked) {
         const newPrice = parseFloat(price) * 2
         setPrice(`${newPrice}`)
       } else {
@@ -65,11 +68,9 @@ const Form = () => {
         setPrice(`${newPrice}`)
       }
     }
-
-
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData)
     const parsedData = {
@@ -79,7 +80,7 @@ const Form = () => {
       type: type
     }
 
-    const response = await fetch("/email", {
+    await fetch("/email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...parsedData }),
@@ -154,7 +155,7 @@ const Form = () => {
               value={formData.size}
               onChange={handleChange}
             >
-              {formOptions[type]?.size.map((d: any) => (
+              {formOptions[type]?.size.map((d: string) => (
                 <FormControlLabel
                   key={d}
                   value={d}
@@ -173,7 +174,7 @@ const Form = () => {
               onChange={handleChange}
               label="Material"
             >
-              {formOptions[type]?.materials.map((m: any) => (
+              {formOptions[type]?.materials.map((m: string) => (
                 <MenuItem key={m} value={m}>
                   {m}
                 </MenuItem>
